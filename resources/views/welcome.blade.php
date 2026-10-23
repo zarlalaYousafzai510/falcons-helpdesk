@@ -273,5 +273,53 @@
         @if (Route::has('login'))
             <div class="h-14.5 hidden lg:block"></div>
         @endif
+       <section>
+    <h1>Submit a ticket</h1>
+
+    <form id="ticket-form" method="POST" action="/tickets">
+        @csrf
+
+        <label for="subject">Subject</label>
+        <input id="subject" name="subject" type="text" required>
+
+        <label for="description">Description</label>
+        <textarea id="description" name="description" required></textarea>
+
+        <button type="submit">Submit ticket</button>
+        <div id="ticket-message" role="status" aria-live="polite"></div>
+    </form>
+</section> 
+      <script>
+    document.getElementById('ticket-form').addEventListener('submit', async function (event) {
+        event.preventDefault();
+
+        const form = event.currentTarget;
+        const message = document.getElementById('ticket-message');
+
+        try {
+            const response = await fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json'
+                },
+                body: new FormData(form)
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                message.textContent = data.errors
+                    ? Object.values(data.errors).flat().join(' ')
+                    : (data.message || 'Could not submit the ticket.');
+                return;
+            }
+
+            message.textContent = data.message;
+            form.reset();
+        } catch {
+            message.textContent = 'Could not submit the ticket. Please try again.';
+        }
+    });
+</script>
     </body>
 </html>
