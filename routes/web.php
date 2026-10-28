@@ -8,4 +8,5 @@ Route::get('/', function () {
 });
 
 Route::post('/tickets', [TicketController::class, 'store']);
-Route::get('/inbox', [TicketController::class, 'index']);
+Route::get('/inbox', [TicketController::class, 'index'])->name('inbox');
+Route::post('/inbox/{ticket}/reply', [TicketController::class, 'reply'])->name('tickets.reply');
